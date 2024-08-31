@@ -18,6 +18,7 @@ node {
             sh 'env/bin/python3.10 manage.py test --testrunner=myproject.tests.test_runners.NoDbTestRunner'
 
         stage 'Deploy'
+            sh 'chmod +x ./deployment/deploy_prod.sh'
             sh './deployment/deploy_prod.sh'
 
         stage 'Publish results'
