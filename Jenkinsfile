@@ -30,9 +30,26 @@ node {
         }
 
         stage('Deploy') {
-            sh 'chmod +x ./deployment/deploy_prod.sh'
-            sh './deployment/deploy_prod.sh'
-        }
+    steps {
+        sh '''
+        # Ensure virtual environment exists and activate it
+        if [ ! -d "/opt/envs/cicdproject" ]; then
+            python3.10 -m venv /opt/envs/cicdproject
+        fi
+        source /opt/envs/cicdproject/bin/activate
+        
+        # Install dependencies
+        pip install -r requirements.txt
+
+        # Fix permissions
+        chmod +x ./manage.py
+
+        # Run deployment script
+        ./deployment/deploy_prod.sh
+        '''
+    }
+}
+
 
         stage('Publish results') {
             slackSend color: "good", message: "Build successful: `${env.JOB_NAME}#${env.BUILD_NUMBER}` <${env.BUILD_URL}|Open in Jenkins>"
