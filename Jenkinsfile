@@ -1,5 +1,3 @@
-#!groovy
-
 node {
     // Securely retrieve the database password from Jenkins credentials
     environment {
@@ -22,7 +20,7 @@ node {
 
             // Use the database password from the environment variable
             sh """
-            export DB_PASSWORD=${DB_PASSWORD}
+            export DB_PASSWORD=${env.DB_PASSWORD}
             env/bin/python3.10 manage.py test --testrunner=myproject.tests.test_runners.NoDbTestRunner
             """
         }
@@ -35,9 +33,7 @@ node {
         stage('Publish results') {
             slackSend color: "good", message: "Build successful: `${env.JOB_NAME}#${env.BUILD_NUMBER}` <${env.BUILD_URL}|Open in Jenkins>"
         }
-    }
-
-    catch (err) {
+    } catch (err) {
         slackSend color: "danger", message: "Build failed :face_with_head_bandage: \n`${env.JOB_NAME}#${env.BUILD_NUMBER}` <${env.BUILD_URL}|Open in Jenkins>"
         throw err
     }
