@@ -11,10 +11,12 @@ node {
             sh 'virtualenv env -p python3.10'
             sh '. env/bin/activate'
             sh 'env/bin/pip install -r requirements.txt'
+            sh 'export DB_PASSWORD=${DB_PASSWORD}'
             sh 'env/bin/python3.10 manage.py test --testrunner=myproject.tests.test_runners.NoDbTestRunner'
 
         }
         stage 'Deploy'
+            sh 'chmod +x ./deployment/deploy_prod.sh'
             sh './deployment/deploy_prod.sh'
         stage 'Publish results'
             slackSend color: "good", message: "Build successful: `${env.JOB_NAME}#${env.BUILD_NUMBER}` <${env.BUILD_URL}|Open in Jenkins>"
