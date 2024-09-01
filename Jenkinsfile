@@ -1,3 +1,5 @@
+#!groovy
+
 node {
     // Securely retrieve the database password from Jenkins credentials
     environment {
@@ -14,15 +16,11 @@ node {
         }
 
         stage('Test') {
-            sh 'virtualenv env -p python3.10'
-            sh 'source env/bin/activate' // Use source to activate virtual environment in bash
-            sh 'pip install -r requirements.txt'
-
-            // Debug: Print environment variables for verification
-            sh 'echo $DB_PASSWORD'
-
-            // Set environment variable for Django test
+            // Use bash explicitly for commands that need it
             sh '''
+            virtualenv env -p python3.10
+            source env/bin/activate
+            pip install -r requirements.txt
             export DB_PASSWORD=${DB_PASSWORD}
             python3.10 manage.py test --testrunner=myproject.tests.test_runners.NoDbTestRunner
             '''
