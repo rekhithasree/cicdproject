@@ -14,15 +14,14 @@ node {
         }
 
         stage('Test') {
-            sh 'virtualenv env -p python3.10'
-            sh '. env/bin/activate'
-            sh 'env/bin/pip install -r requirements.txt'
-
-            // Use the database password from the environment variable
-            sh """
-            export DB_PASSWORD=${env.DB_PASSWORD}
-            env/bin/python3.10 manage.py test --testrunner=myproject.tests.test_runners.NoDbTestRunner
-            """
+            withEnv(["DB_PASSWORD=${env.DB_PASSWORD}"]) {
+                sh '''
+                virtualenv env -p python3.10
+                . env/bin/activate
+                pip install -r requirements.txt
+                python manage.py test --testrunner=myproject.tests.test_runners.NoDbTestRunner
+                '''
+            }
         }
 
         stage('Deploy') {
