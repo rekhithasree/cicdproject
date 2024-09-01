@@ -101,7 +101,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'defaultdb',  # Database name
         'USER': 'doadmin',  # Database username
-        'PASSWORD': 'os.getenv('DB_PASSWORD')',  # Database password
+        'PASSWORD': os.getenv('DB_PASSWORD'),   # Database password
         'HOST': 'db-postgresql-blr1-53371-do-user-14533663-0.j.db.ondigitalocean.com',  # Database host
         'PORT': '25060',  # Database port
         'OPTIONS': {
