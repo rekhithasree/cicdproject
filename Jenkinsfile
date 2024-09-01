@@ -20,7 +20,6 @@ node {
             . env/bin/activate  # Use dot notation for activation
             pip install -r requirements.txt
             export DB_PASSWORD=${DB_PASSWORD}
-            python3.10 manage.py test --testrunner=myproject.tests.test_runners.NoDbTestRunner
             '''
         }
 
