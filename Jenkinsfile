@@ -14,7 +14,7 @@ node {
         }
 
         stage('Test') {
-            withCredentials([string(credentialsId: '5877f0cc-a1a5-4ee3-a2f0-ae01a1754e8e', variable: 'DB_PASSWORD')]) {
+            withCredentials([string(credentialsId: '0f0b387c-3fd1-4329-abf4-d2a7bfe7b248', variable: 'DB_PASSWORD')]) {
                     sh '''
                     virtualenv env -p python3.10
                     . env/bin/activate  
