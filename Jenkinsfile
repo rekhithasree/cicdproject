@@ -1,9 +1,12 @@
 #!groovy
 
 node {
-    // Securely retrieve the database password from Jenkins credentials
     environment {
+        DB_NAME = 'defaultdb'
+        DB_USER = 'doadmin'
         DB_PASSWORD = credentials('DB_PASSWORD') // Ensure this ID matches your Jenkins credentials ID
+        DB_HOST = 'db-postgresql-blr1-53371-do-user-14533663-0.j.db.ondigitalocean.com'
+        DB_PORT = '25060'
     }
 
     try {
@@ -16,12 +19,15 @@ node {
         }
 
         stage('Test') {
-            // Use bash explicitly for commands that need it
             sh '''
             virtualenv env -p python3.10
-            . env/bin/activate  # Use dot notation for activation
+            . env/bin/activate
             pip install -r requirements.txt
+            export DB_NAME=${DB_NAME}
+            export DB_USER=${DB_USER}
             export DB_PASSWORD=${DB_PASSWORD}
+            export DB_HOST=${DB_HOST}
+            export DB_PORT=${DB_PORT}
             python3.10 manage.py test --testrunner=myproject.tests.test_runners.NoDbTestRunner
             '''
         }

@@ -96,20 +96,18 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 #     }
 # }
 
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'defaultdb',  # Database name
-        'USER': 'doadmin',  # Database username
-        'PASSWORD': os.getenv('DB_PASSWORD'),   # Database password
-        'HOST': 'db-postgresql-blr1-53371-do-user-14533663-0.j.db.ondigitalocean.com',  # Database host
-        'PORT': '25060',  # Database port
-        'OPTIONS': {
-            'sslmode': 'require',  # Ensure SSL mode is enabled
-            'sslrootcert': os.path.join(BASE_DIR, 'certs', 'ca-certificate.crt'),
-        },
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'),
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
