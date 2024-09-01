@@ -15,17 +15,17 @@ node {
 
         stage('Test') {
             sh 'virtualenv env -p python3.10'
-            sh '. env/bin/activate'
-            sh 'env/bin/pip install -r requirements.txt'
+            sh 'source env/bin/activate' // Use source to activate virtual environment in bash
+            sh 'pip install -r requirements.txt'
 
             // Debug: Print environment variables for verification
-            sh 'echo DB_PASSWORD=${env.DB_PASSWORD}'
+            sh 'echo $DB_PASSWORD'
 
             // Set environment variable for Django test
-            sh """
-            export DB_PASSWORD=${env.DB_PASSWORD}
-            env/bin/python3.10 manage.py test --testrunner=myproject.tests.test_runners.NoDbTestRunner
-            """
+            sh '''
+            export DB_PASSWORD=${DB_PASSWORD}
+            python3.10 manage.py test --testrunner=myproject.tests.test_runners.NoDbTestRunner
+            '''
         }
 
         stage('Deploy') {
