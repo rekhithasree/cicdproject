@@ -1,6 +1,7 @@
 node {
+    // Securely retrieve the database password from Jenkins credentials
     environment {
-        DB_PASSWORD = credentials('DB_PASSWORD') // Replace 'DB_PASSWORD' with the actual ID of your credential
+        DB_PASSWORD = credentials('DB_PASSWORD') // Ensure this ID matches your Jenkins credentials ID
     }
 
     try {
@@ -12,19 +13,19 @@ node {
             slackSend color: "warning", message: "Started `${env.JOB_NAME}#${env.BUILD_NUMBER}`\n\n_The changes:_\n${lastChanges}"
         }
 
-        stage('Debug') {
-            echo "DB_PASSWORD is ${env.DB_PASSWORD}" // Be cautious with this line in production
-        }
-
         stage('Test') {
-            withEnv(["DB_PASSWORD=${env.DB_PASSWORD}"]) {
-                sh '''
-                virtualenv env -p python3.10
-                . env/bin/activate
-                pip install -r requirements.txt
-                python manage.py test --testrunner=myproject.tests.test_runners.NoDbTestRunner
-                '''
-            }
+            sh 'virtualenv env -p python3.10'
+            sh '. env/bin/activate'
+            sh 'env/bin/pip install -r requirements.txt'
+
+            // Debug: Print environment variables for verification
+            sh 'echo DB_PASSWORD=${env.DB_PASSWORD}'
+
+            // Set environment variable for Django test
+            sh """
+            export DB_PASSWORD=${env.DB_PASSWORD}
+            env/bin/python3.10 manage.py test --testrunner=myproject.tests.test_runners.NoDbTestRunner
+            """
         }
 
         stage('Deploy') {
