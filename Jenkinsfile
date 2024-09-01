@@ -14,16 +14,12 @@ node {
         }
 
         stage('Test') {
-            withCredentials([string(credentialsId: '0f0b387c-3fd1-4329-abf4-d2a7bfe7b248', variable: 'DB_PASSWORD')]) {
+            withCredentials([string(credentialsId: '5877f0cc-a1a5-4ee3-a2f0-ae01a1754e8e', variable: 'DB_PASSWORD')]) {
                     sh '''
                     virtualenv env -p python3.10
                     . env/bin/activate  
                     pip install -r requirements.txt
-                    export DB_NAME=defaultdb
-                    export DB_USER=doadmin
                     export DB_PASSWORD=${DB_PASSWORD}
-                    export DB_HOST=db-postgresql-blr1-53371-do-user-14533663-0.j.db.ondigitalocean.com
-                    export DB_PORT=25060
                     echo "DB_PASSWORD: ${DB_PASSWORD}"
                     python3.10 manage.py test --testrunner=myproject.tests.test_runners.NoDbTestRunner
                     '''
