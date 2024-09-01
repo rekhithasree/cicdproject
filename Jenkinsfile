@@ -14,10 +14,10 @@ node {
         }
 
         stage('Test') {
-            withCredentials([string(credentialsId: 'DB_PASSWORD', variable: 'DB_PASSWORD')]) {
+            withCredentials([string(credentialsId: '0f0b387c-3fd1-4329-abf4-d2a7bfe7b248', variable: 'DB_PASSWORD')]) {
                     sh '''
                     virtualenv env -p python3.10
-                    . env/bin/activate  # Use dot notation for activation
+                    . env/bin/activate  
                     pip install -r requirements.txt
                     export DB_NAME=defaultdb
                     export DB_USER=doadmin
@@ -30,26 +30,9 @@ node {
         }
 
         stage('Deploy') {
-    steps {
-        sh '''
-        # Ensure virtual environment exists and activate it
-        if [ ! -d "/opt/envs/cicdproject" ]; then
-            python3.10 -m venv /opt/envs/cicdproject
-        fi
-        source /opt/envs/cicdproject/bin/activate
-        
-        # Install dependencies
-        pip install -r requirements.txt
-
-        # Fix permissions
-        chmod +x ./manage.py
-
-        # Run deployment script
-        ./deployment/deploy_prod.sh
-        '''
-    }
-}
-
+            sh 'chmod +x ./deployment/deploy_prod.sh'
+            sh './deployment/deploy_prod.sh'
+        }
 
         stage('Publish results') {
             slackSend color: "good", message: "Build successful: `${env.JOB_NAME}#${env.BUILD_NUMBER}` <${env.BUILD_URL}|Open in Jenkins>"
