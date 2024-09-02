@@ -11,8 +11,8 @@ ssh root@134.209.159.114 <<EOF
   git pull || { echo "Git pull failed"; exit 1; }
   
   # Activate virtual environment
-  if [ -f /opt/envs/cicdproject/bin/activate ]; then
-    source /opt/envs/cicdproject/bin/activate
+  if [ -f env/bin/activate ]; then
+    source env/bin/activate
   else
     echo "Virtual environment not found"
     exit 1
