@@ -5,7 +5,7 @@ export DB_PASSWORD=${DB_PASSWORD}
 
 ssh root@134.209.159.114 <<EOF
   # Navigate to project directory
-  cd /path/to/cicdproject || { echo "Directory not found"; exit 1; }
+  cd cicdproject || { echo "Directory not found"; exit 1; }
   
   # Pull latest code
   git pull || { echo "Git pull failed"; exit 1; }
