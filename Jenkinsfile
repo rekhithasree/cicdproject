@@ -1,29 +1,22 @@
-#!groovy
-
-
 node {
-    
     try {
         stage('Checkout') {
             checkout scm
-
             sh 'git log HEAD^..HEAD --pretty="%h %an - %s" > GIT_CHANGES'
             def lastChanges = readFile('GIT_CHANGES')
             slackSend color: "warning", message: "Started `${env.JOB_NAME}#${env.BUILD_NUMBER}`\n\n_The changes:_\n${lastChanges}"
         }
 
-        
-
         stage('Test') {
             withCredentials([string(credentialsId: '0f0b387c-3fd1-4329-abf4-d2a7bfe7b248', variable: 'DB_PASSWORD')]) {
-                    sh '''
-                    virtualenv env -p python3.10
-                    . env/bin/activate  
-                    env/bin/pip install -r requirements.txt
-                    export DB_PASSWORD=${DB_PASSWORD}
-                    echo "DB_PASSWORD: ${DB_PASSWORD}"
-                    env/bin/python3.10 manage.py test --testrunner=myproject.tests.test_runners.NoDbTestRunner
-                    '''
+                sh '''
+                virtualenv env -p python3.10
+                . env/bin/activate  
+                pip install -r requirements.txt
+                export DB_PASSWORD=${DB_PASSWORD}
+                echo "DB_PASSWORD: ${DB_PASSWORD}"
+                python manage.py test --testrunner=myproject.tests.test_runners.NoDbTestRunner
+                '''
             }
         }
 
